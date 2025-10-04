@@ -1,0 +1,108 @@
+<html>
+
+<canvas id="myCanvas" width="400" height="200" style="border:1px solid #000;"></canvas>
+
+<script>
+
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
+
+
+const rotationAngleDegrees = Math.random() * 360; // Desired rotation in degrees
+const rotationAngleRadians = rotationAngleDegrees * Math.PI / 180;
+
+const randomColor = generateRandomHexColor();
+const randomLetter = getRandomLetter()
+
+ctx.font = '24px serif'; // Sets font size and family
+ctx.fillStyle = randomColor; // Sets text color
+ctx.textAlign = 'center'; // Aligns text horizontally
+ctx.textBaseline = 'middle'; // Aligns text vertically
+
+let letterX = canvas.width;
+let letterY = 0;
+let letterSpeedX= -1;
+let letterSpeedY= 1;
+
+function draw() {
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw ball
+    //ctx.fillRect(ballX - ballSize / 2, ballY - ballSize / 2, ballSize, ballSize);
+    drawLetter();
+    
+
+    // Draw scores
+    //ctx.font = '30px Arial';
+    //ctx.fillText(player1Score, canvas.width / 4, 50);
+    //ctx.fillText(player2Score, canvas.width * 3 / 4, 50);
+}
+
+
+function drawLetter(){
+
+
+//const x = canvas.width/2;
+//const y = canvas.height/2;
+
+let x = letterX;
+let y = letterY;
+
+ctx.save();
+
+ctx.translate(x,y)
+ctx.rotate(rotationAngleRadians)
+
+        let textMetrics = ctx.measureText(randomLetter);
+        let textWidth = textMetrics.width;
+        let textHeight = parseInt(ctx.font); // A rough estimate for height
+
+ctx.fillText(randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
+
+ctx.restore();
+
+}
+
+function generateRandomHexColor() {
+  const maxVal = 0xFFFFFF; // Represents the maximum possible hex value (16777215)
+  let randomNumber = Math.floor(Math.random() * (maxVal + 1)); // Generate a random number between 0 and 16777215
+  let hexColor = randomNumber.toString(16); // Convert to hexadecimal string
+  hexColor = hexColor.padStart(6, '0'); // Pad with leading zeros if necessary to ensure 6 characters
+  return `#${hexColor.toUpperCase()}`; // Prepend '#' and convert to uppercase
+}
+
+function getRandomLetter() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const randomIndex = Math.floor(Math.random() * characters.length);
+  return characters.charAt(randomIndex);
+}
+
+function update(){
+  letterX += letterSpeedX;
+  letterY += letterSpeedY;
+        if (letterX < 0) {
+            letterX = canvas.width;
+        }
+}
+
+function resetLetter() {
+    letterX = canvas.width;
+    letterY = 0;
+    letterSpeedX = -1; // Random initial direction
+    letterSpeedY = 1;
+}
+
+function gameLoop(){
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+resetLetter();
+requestAnimationFrame(gameLoop);
+
+</script>
+
+</html>
