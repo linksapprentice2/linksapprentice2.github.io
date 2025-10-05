@@ -233,6 +233,7 @@ let chef = {
    height: 80
 };
 
+
 function generateLetters(){
      for (var i = 0; i<3; i++){
      let letter={
@@ -341,7 +342,18 @@ ctx.rotate(letters[i].rotationAngleRadians)
         let textWidth = textMetrics.width;
         let textHeight = parseInt(ctx.font); // A rough estimate for height
 
+
+         /*if (chef.x >= letters[i].x - textWidth/2 && chef.x <= letters[i].x + textWidth/2 && chef.y >= letters[i].y - textHeight/2 && chef.y <= letters[i].y + textHeight/2){
+             // alert("test");
+              letters.splice(i, 1);
+console.log(letters);
+               break;
+         }*/
+
+
 ctx.fillText(letters[i].randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
+
+
 
 ctx.restore();
 }
