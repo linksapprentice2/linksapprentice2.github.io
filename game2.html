@@ -2,7 +2,7 @@
 
 
 <div style="display:none;">
-<img id="scream" width="50" height="50" src="chef_2177927.png">
+<img id="scream" width="50" height="50" src="https://linksapprentice2.github.io/chef_2177927.png">
 </div>
 
 <canvas id="myCanvas" width="800" height="600" style="border:1px solid #000; display:block; margin:0 auto;"></canvas>
@@ -141,6 +141,9 @@ function draw() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.drawImage(image, 10, 10, 80, 80);
+
 
     // Draw ball
     //ctx.fillRect(ballX - ballSize / 2, ballY - ballSize / 2, ballSize, ballSize);
