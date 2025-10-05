@@ -104,6 +104,7 @@ function addNavigatorListeners(button){
    button.addEventListener('touchcancel', mouseOutNavigator);
 }
 
+
 addNavigatorListeners(topButton);
 addNavigatorListeners(bottomButton);
 addNavigatorListeners(leftButton);
@@ -221,6 +222,8 @@ image.addEventListener("load", (e) => {
   ctx.drawImage(image, 10, 10, chef.width, chef.height);
 });
 
+let points = 0;
+
 let letters = [];
 
 let chef = {
@@ -326,8 +329,7 @@ function drawLetter(){
 //const x = canvas.width/2;
 //const y = canvas.height/2;
 
-for (var i=0; i<letters.length; i++){
-
+for (let i = letters.length - 1; i >= 0; i--) {
 let x = letters[i].x;
 let y = letters[i].y;
 
@@ -343,16 +345,23 @@ ctx.rotate(letters[i].rotationAngleRadians)
         let textHeight = parseInt(ctx.font); // A rough estimate for height
 
 
-         /*if (chef.x >= letters[i].x - textWidth/2 && chef.x <= letters[i].x + textWidth/2 && chef.y >= letters[i].y - textHeight/2 && chef.y <= letters[i].y + textHeight/2){
+         if (chef.x >= letters[i].x - textWidth/2 && chef.x <= letters[i].x + textWidth/2 && chef.y >= letters[i].y - textHeight/2 && chef.y <= letters[i].y + textHeight/2){
              // alert("test");
-              letters.splice(i, 1);
-console.log(letters);
-               break;
-         }*/
+            console.log(letters);
 
+            let lowerCaseLetter = letters[i].randomLetter.toLowerCase();
+            pointage =  (lowerCaseLetter.charCodeAt(0) - 'a'.charCodeAt(0) + 1);
+            points += pointage;
+            console.log(letters[i].randomLetter);
+            console.log (pointage);
+            console.log (points);
+                           letters.splice(i, 1);
 
-ctx.fillText(letters[i].randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
+         }	
+else{
 
+	ctx.fillText(letters[i].randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
+}
 
 
 ctx.restore();
