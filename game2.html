@@ -7,8 +7,24 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
+let letters = [];
 
-
+function generateLetters(){
+     for (var i = 0; i<3; i++){
+     let letter={
+     rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
+     randomColor : generateRandomHexColor(),
+     randomLetter : getRandomLetter(),
+     x : getRandomIntInclusive(0, canvas.width+canvas.width*2),
+     y : 0
+    };
+        letters.push(letter);
+    }
+}
+  let interval = setInterval(() => {
+      generateLetters();
+    }, 1000);
+/*
 const letterOne={
      rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
      randomColor : generateRandomHexColor(),
@@ -32,6 +48,7 @@ const letterThree = {
      x : getRandomIntInclusive(0, canvas.width),
      y : 0
 };
+*/
 
 //const rotationAngleDegrees = Math.random() * 360; // Desired rotation in degrees
 //const rotationAngleRadians = rotationAngleDegrees * Math.PI / 180;
@@ -53,7 +70,7 @@ ctx.textBaseline = 'middle'; // Aligns text vertically
 // let letterThreeX = canvas.width
 // let letterThreeY =100;
 
-let letters = [letterOne, letterTwo, letterThree];
+//let letters = [letterOne, letterTwo, letterThree];
 
 let letterSpeedX= -1;
 let letterSpeedY= 1;
