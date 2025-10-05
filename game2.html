@@ -82,7 +82,10 @@ $(".right-button").on("click", function(){
 
 const canvas = document.getElementById('myCanvas');
 
-canvas.addEventListener('touchstart', (e) => {
+canvas.addEventListener('touchstart', moveSpriteToTouch);
+canvas.addEventListener('click', moveSpriteToClick);
+
+function moveSpriteToTouch(e) {
     e.preventDefault(); // Prevent default browser behavior (e.g., scrolling)
     isTouching = true;
     const touch = e.touches[0]; // Get the first touch point
@@ -95,16 +98,69 @@ canvas.addEventListener('touchstart', (e) => {
         // Store these coordinates as the target for the sprite
         targetX = mouseX;
         targetY = mouseY;
-        let dx = targetX - chef.x;
-        let dy = targetY - chef.y;
+       // let dx = targetX - chef.x;
+       // let dy = targetY - chef.y;
+
+        let dx = Math.abs(targetX - chef.x);
+        let dy = Math.abs(targetY- chef.y);
+
+console.log(targetX);
+console.log(targetY);
+console.log(mouseX);
+console.log(mouseY);
         let distance = Math.sqrt(dx * dx + dy * dy);
+           let unitX = 0;
+           let unitY = 0;
+
+
       if (distance > 0) { // Avoid division by zero if sprite is already at target
         let unitX = dx / distance;
         let unitY = dy / distance;
       }
+console.log(unitY);
+console.log(unitX);
+
        chef.x += unitX;
        chef.y += unitY;
-});
+}
+
+function moveSpriteToClick(event) {
+console.log("CLICK");
+
+console.log("CLIENT X AND Y");
+
+console.log(event.clientX);
+console.log(event.clientY);
+    let rect = canvas.getBoundingClientRect();
+          let  targetX = event.clientX - rect.left;
+          let  targetY = event.clientY - rect.top;
+console.log("TARGET X AND Y");
+
+console.log(targetX);
+console.log(targetY);
+    let dx = targetX - chef.x;
+    let dy = targetY - chef.y;
+
+console.log("DX AND DY");
+
+console.log(dx);
+console.log(dy);
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+console.log(distance);
+    if (distance>5) { // Move if not yet at the target
+        let incrementX = (dx / distance) * 5;
+        let incrementY = (dy / distance) * 5;
+
+console.log(incrementX);
+console.log(incrementY);
+        chef.x += incrementX;
+        chef.y += incrementY;
+    } else { // Snap to target if very close
+        chef.x = targetX;
+        chef.y = targetY;
+    }
+}
 
 
 const ctx = canvas.getContext('2d');
@@ -112,7 +168,7 @@ const ctx = canvas.getContext('2d');
 const image = document.getElementById("scream");
 
 image.addEventListener("load", (e) => {
-  ctx.drawImage(image, 10, 10, 80, 80);
+  ctx.drawImage(image, 10, 10, chef.width, chef.height);
 });
 
 let letters = [];
@@ -122,7 +178,9 @@ let chef = {
    x : canvas.width / 2,
    y :  canvas.height / 2,
    dx: 0,
-   dy: 0
+   dy: 0,
+   width: 80,
+   height: 80
 };
 
 function generateLetters(){
