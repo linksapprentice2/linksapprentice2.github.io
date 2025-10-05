@@ -2,12 +2,55 @@
 
 <canvas id="myCanvas" width="800" height="600" style="border:1px solid #000; display:block; margin:0 auto;"></canvas>
 
+
+<div class="button-container">
+  <button class="top-button">Up</button>
+  <div class="middle-row">
+    <button>Left</button>
+    <!--<button>Center</button>-->
+    <button>Right</button>
+  </div>
+  <button class="bottom-button">Down</button>
+</div>
+
 <style>
 @media screen and (min-width: 992px) {
 #myCanvas{
   height:400px;
 }
 }
+
+
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stacks the rows of buttons */
+  justify-content: center;
+  align-items: center; /* Centers the columns within the container */
+  height: 200px; /* Example height for centering */
+  border: 1px solid #ccc; /* For visualization */
+}
+
+.top-button,
+.bottom-button {
+  width: 50px; /* Example width */
+  height: 30px; /* Example height */
+  margin: 5px;
+}
+
+.middle-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle-row button {
+  width: 50px; /* Example width */
+  height: 30px; /* Example height */
+  margin: 5px;
+}
+
+
 </style>
 
 <script>
