@@ -62,6 +62,8 @@
 
 <script>
 
+
+
 $(".top-button").on("click", function(){
   chef.y -= 5;
 });
@@ -79,6 +81,32 @@ $(".right-button").on("click", function(){
 
 
 const canvas = document.getElementById('myCanvas');
+
+canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent default browser behavior (e.g., scrolling)
+    isTouching = true;
+    const touch = e.touches[0]; // Get the first touch point
+    // touch.clientX, touch.clientY);
+    // Start drawing or other press-related action
+
+        const mouseX = touch.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = touch.clientY - canvas.getBoundingClientRect().top;
+
+        // Store these coordinates as the target for the sprite
+        targetX = mouseX;
+        targetY = mouseY;
+        let dx = targetX - chef.x;
+        let dy = targetY - chef.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance > 0) { // Avoid division by zero if sprite is already at target
+        let unitX = dx / distance;
+        let unitY = dy / distance;
+      }
+       chef.x += unitX;
+       chef.y += unitY;
+});
+
+
 const ctx = canvas.getContext('2d');
 
 const image = document.getElementById("scream");
@@ -93,7 +121,8 @@ let chef = {
 
    x : canvas.width / 2,
    y :  canvas.height / 2,
-
+   dx: 0,
+   dy: 0
 };
 
 function generateLetters(){
