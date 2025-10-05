@@ -99,6 +99,9 @@ function addNavigatorListeners(button){
    button.addEventListener('mousedown', mouseDownNavigator);
    button.addEventListener('mouseup', mouseUpNavigator);
    button.addEventListener('mouseout', mouseOutNavigator);
+   button.addEventListener('touchstart', mouseDownNavigator);
+   button.addEventListener('touchend', mouseUpNavigator);
+   button.addEventListener('touchcancel', mouseOutNavigator);
 }
 
 addNavigatorListeners(topButton);
