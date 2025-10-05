@@ -315,6 +315,20 @@ function draw() {
     //ctx.fillRect(ballX - ballSize / 2, ballY - ballSize / 2, ballSize, ballSize);
     drawLetter();
     
+   ctx.fillStyle = "black";
+   ctx.fillRect(canvas.width-300, canvas.height-100, 300, 100);
+    ctx.font = '50px Arial'; // Set the font style and size
+    ctx.textAlign = 'center'; // Center the text horizontally
+    ctx.textBaseline = 'middle'; // Center the text vertically
+    ctx.fillStyle= "white";
+
+    let textX = (canvas.width-300) + 300 / 2;
+    let textY = (canvas.height-100) + 100 / 2;
+
+  
+    ctx.fillText(points.toString(), textX, textY);
+
+ctx.font = '96px serif'; // Sets font size and family
 
     // Draw scores
     //ctx.font = '30px Arial';
