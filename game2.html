@@ -1,5 +1,10 @@
 <html>
 
+
+<div style="display:none;">
+<img id="scream" width="50" height="50" src="chef_2177927.png">
+</div>
+
 <canvas id="myCanvas" width="800" height="600" style="border:1px solid #000; display:block; margin:0 auto;"></canvas>
 
 
@@ -58,14 +63,12 @@
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
-    // Create an image object
-    const img = new Image();
-    img.src = 'chef_2177927.png'; // Replace with your image URL
+const image = document.getElementById("scream");
 
-    // Draw the image on the canvas once it's loaded
-    img.onload = () => {
-      ctx.drawImage(img, 50, 50, 150, 150); // (image, x, y, width, height)
-    };
+image.addEventListener("load", (e) => {
+  ctx.drawImage(image, 10, 10, 80, 80);
+});
+
 let letters = [];
 
 function generateLetters(){
