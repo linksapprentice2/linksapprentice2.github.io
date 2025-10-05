@@ -11,9 +11,9 @@
 <div class="button-container">
   <button class="top-button">Up</button>
   <div class="middle-row">
-    <button>Left</button>
+    <button class="left-button">Left</button>
     <!--<button>Center</button>-->
-    <button>Right</button>
+    <button class="right-button"s>Right</button>
   </div>
   <button class="bottom-button">Down</button>
 </div>
@@ -58,7 +58,25 @@
 
 </style>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 <script>
+
+$(".top-button").on("click", function(){
+  chef.y -= 5;
+});
+$(".bottom-button").on("click", function(){
+  chef.y += 5;
+});
+
+$(".left-button").on("click", function(){
+  chef.x -= 5;
+});
+
+$(".right-button").on("click", function(){
+  chef.x += 5;
+});
+
 
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
@@ -70,6 +88,13 @@ image.addEventListener("load", (e) => {
 });
 
 let letters = [];
+
+let chef = {
+
+   x : canvas.width / 2,
+   y :  canvas.height / 2,
+
+};
 
 function generateLetters(){
      for (var i = 0; i<3; i++){
@@ -142,7 +167,7 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.drawImage(image, 10, 10, 80, 80);
+  ctx.drawImage(image, chef.x, chef.y, 80, 80);
 
 
     // Draw ball
