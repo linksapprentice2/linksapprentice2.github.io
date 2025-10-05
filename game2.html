@@ -62,7 +62,49 @@
 
 <script>
 
+const topButton = document.getElementsByClassName('top-button')[0];
+const bottomButton = document.getElementsByClassName("bottom-button")[0];
+const leftButton = document.getElementsByClassName("left-button")[0];
+const rightButton = document.getElementsByClassName("right-button")[0];
 
+let holdTimer;
+
+function mouseDownNavigator(event){
+  // Start a timer for 1 second (1000 milliseconds)
+    className = event.currentTarget.className;
+
+  holdTimer = setInterval(() => {
+    if (className == "top-button")
+        chef.y -= 5;
+    else if (className == "bottom-button")
+        chef.y += 5;
+    else if (className == "left-button")
+        chef.x -= 5;
+    else if (className == "right-button")
+        chef.x += 5;
+    // Add your "hold" logic here
+  }, 50);
+ }
+
+function  mouseUpNavigator (event) {
+  // Clear the timer if the button is released early
+  clearInterval(holdTimer);
+}
+
+function mouseOutNavigator(event){
+  clearInterval(holdTimer);
+}
+
+function addNavigatorListeners(button){
+   button.addEventListener('mousedown', mouseDownNavigator);
+   button.addEventListener('mouseup', mouseUpNavigator);
+   button.addEventListener('mouseout', mouseOutNavigator);
+}
+
+addNavigatorListeners(topButton);
+addNavigatorListeners(bottomButton);
+addNavigatorListeners(leftButton);
+addNavigatorListeners(rightButton);
 
 $(".top-button").on("click", function(){
   chef.y -= 5;
@@ -131,9 +173,9 @@ console.log("CLIENT X AND Y");
 
 console.log(event.clientX);
 console.log(event.clientY);
-    let rect = canvas.getBoundingClientRect();
-          let  targetX = event.clientX - rect.left;
-          let  targetY = event.clientY - rect.top;
+    //let rect = canvas.getBoundingClientRect();
+          let  targetX = event.clientX //- rect.left;
+          let  targetY = event.clientY //- rect.top;
 console.log("TARGET X AND Y");
 
 console.log(targetX);
@@ -141,6 +183,11 @@ console.log(targetY);
     let dx = targetX - chef.x;
     let dy = targetY - chef.y;
 
+     //let dx = chef.x - targetX;
+     //let dy = chef.y - targetY;
+console.log("CHEF X AND Y");
+console.log(chef.x);
+console.log(chef.y);
 console.log("DX AND DY");
 
 console.log(dx);
