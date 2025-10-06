@@ -1,5 +1,12 @@
 <html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
+
+</head>
+
+<body>
 
 <div style="display:none;">
 <img id="scream" width="50" height="50" src="https://linksapprentice2.github.io/chef_2177927.png">
@@ -9,13 +16,13 @@
 
 
 <div class="button-container">
-  <button class="top-button">Up</button>
+  <button class="top-button btn btn-primary"> <i class="bi bi-arrow-up"></i></button>
   <div class="middle-row">
-    <button class="left-button">Left</button>
+    <button class="left-button btn btn-primary"><i class="bi bi-arrow-left"></i></button>
     <!--<button>Center</button>-->
-    <button class="right-button"s>Right</button>
+    <button class="right-button btn btn-primary"><i class="bi bi-arrow-right"></i></button>
   </div>
-  <button class="bottom-button">Down</button>
+  <button class="bottom-button btn btn-primary"><i class="bi bi-arrow-down"></i></button>
 </div>
 
 <style>
@@ -25,7 +32,9 @@
 }
 }
 
-
+button i{
+   font-size: 75px;
+}
 
 .button-container {
   display: flex;
@@ -71,7 +80,16 @@ let holdTimer;
 
 function mouseDownNavigator(event){
   // Start a timer for 1 second (1000 milliseconds)
-    className = event.currentTarget.className;
+    let classNames = event.currentTarget.className.split(" ");
+    let className = "";
+    if (classNames.includes("top-button"))
+          className = "top-button";
+    else if (classNames.includes("bottom-button"))
+          className = "bottom-button";
+    else if (classNames.includes("left-button"))
+         className = "left-button";
+    else if (classNames.includes("right-button"))
+          className = "right-button";
 
   holdTimer = setInterval(() => {
     if (className == "top-button")
@@ -467,5 +485,9 @@ setTimer();
 requestAnimationFrame(gameLoop);
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+</body>
 
 </html>
