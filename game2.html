@@ -222,6 +222,8 @@ image.addEventListener("load", (e) => {
   ctx.drawImage(image, 10, 10, chef.width, chef.height);
 });
 
+let time = 60;
+
 let points = 0;
 
 let letters = [];
@@ -308,6 +310,13 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if(time == 0)
+     {
+       ctx.fillStyle = 'black'; // Set the font style and size
+       ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+       return -1;
+    }
+ 
   ctx.drawImage(image, chef.x, chef.y, 80, 80);
 
 
@@ -324,9 +333,19 @@ function draw() {
 
     let textX = (canvas.width-300) + 300 / 2;
     let textY = (canvas.height-100) + 100 / 2;
-
   
     ctx.fillText(points.toString(), textX, textY);
+
+    textX = 300/2;
+    textY = canvas.height- 100/2;
+    ctx.fillStyle = 'black'; // Set the font style and size
+
+   ctx.fillRect(0, canvas.height-100, 300, 100);
+    ctx.fillStyle = 'white'; // Set the font style and size
+
+    ctx.fillText(time.toString(), textX, textY);
+
+    
 
 ctx.font = '96px serif'; // Sets font size and family
 
@@ -377,7 +396,6 @@ else{
 	ctx.fillText(letters[i].randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
 }
 
-
 ctx.restore();
 }
 
@@ -425,11 +443,25 @@ function resetLetter() {
 
 function gameLoop(){
   update();
-  draw();
+  continuation = draw(); 
+  if (continuation == -1)
+      return;
   requestAnimationFrame(gameLoop);
 }
 
+function decrementTimer(){
+  time -= 1;
+}
+function setTimer(){
+  let interval = setInterval(decrementTimer, 1000);
+  setTimeout(() => {
+  clearInterval(myInterval);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }, 60000);
+}
+
 //resetLetter();
+setTimer();
 requestAnimationFrame(gameLoop);
 
 </script>
