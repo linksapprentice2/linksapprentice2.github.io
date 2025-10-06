@@ -25,6 +25,10 @@
   <button class="bottom-button btn btn-primary"><i class="bi bi-arrow-down"></i></button>
 </div>
 
+<div style="margin-top: 50px; display:none;width:100%;text-align:center" class="play-again-div">
+    <button style="font-size:24px;" class="play-again btn btn-primary"> Play Again</button>
+</div>
+
 <style>
 @media screen and (min-width: 992px) {
 #myCanvas{
@@ -143,6 +147,31 @@ $(".right-button").on("click", function(){
   chef.x += 5;
 });
 
+$(".play-again").on("click", function(){
+   time = 60;
+   points = 0; 
+   let letters = [];
+
+   let chef = {
+
+   x : canvas.width / 2,
+   y :  canvas.height / 2,
+   dx: 0,
+   dy: 0,
+   width: 80,
+   height: 80
+   };
+
+       $(".button-container").show();
+       $("button").show();
+       $(".play-again-div").hide();
+       $(".play-again").hide();
+
+   clearInterval (timerInterval);
+   timerInterval = setTimer();
+   requestAnimationFrame(gameLoop);
+
+});
 
 const canvas = document.getElementById('myCanvas');
 
@@ -328,15 +357,25 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-     if(time <= 0)
+     if(time <=55)
      {
        ctx.fillStyle = 'black'; // Set the font style and size
        ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
 ctx.font = '48px serif'; // Sets font size and family
        ctx.fillStyle = 'blue'; // Set the font style and size
        ctx.fillText("Score: " + points.toString(), canvas.width/2, canvas.height/2+100);
-
+// draw button
+/*
+ctx.fillStyle = '#eeaa00';
+ctx.fillRect(0, canvas.height-100, canvas.width, 100);
+ctx.fillStyle = '#001122';
+ctx.textAlign = 'center';
+ctx.font = '48px arial';
+ctx.fillText('Play Again', canvas.width/2, canvas.height-100/2);*/
+       $(".button-container").hide();
        $("button").hide();
+       $(".play-again-div").show();
+       $(".play-again").show();
        return -1;
     }
  
@@ -490,13 +529,13 @@ function decrementTimer(){
 function setTimer(){
   let interval = setInterval(decrementTimer, 1000);
   setTimeout(() => {
-  clearInterval(myInterval);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearInterval(interval);
   }, 60000);
+  return interval;
 }
 
 //resetLetter();
-setTimer();
+let timerInterval = setTimer();
 requestAnimationFrame(gameLoop);
 
 </script>
