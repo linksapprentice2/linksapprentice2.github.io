@@ -1,55 +1,573 @@
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<style>
-#face{
-width:15%;
-border:1px solid #000000;
-margin-bottom: 50px;
-margin-top: 50px;
-}
-@media only screen and (max-device-width: 480px) {
-    #face{
-      width:50%;
-    }
-}
-#diploma{
-width: 100%;
-}
-.hero-unit{
-text-align: center;
-}
-#text-before-diploma{
-margin-top:50px;
-margin-bottom: 50px;
-}
-h1{
-  margin-top:50px;
-}
-</style>
-</head>
-<body>
-<div class="hero-unit">
 
-<h1>Jeff Farrell</h1>
-<img id="face" src="img_1_1759102302383.jpg"></img>
-<p><a href="/game2.html">Check out my game (work in progress) right here.</a></p>
-<p><a href="https://github.com/linksapprentice1">Check out my GitHub profile here.</a></p>
-<p><a href="https://www.facebook.com/jeff.farrell.9699">Check out my Facebook profile here.</a></p>
-<p><a href="/MyBook14.pdf">Check out my book here...</a></p>
-<p>...or here:</p>
-<div>
-<object data="MyBook14.pdf" type="application/pdf" width="100%">
-alt : <a href="/MyBook14.pdf">MyBook.pdf</a>
-</object>
+
+</head>
+
+<body>
+
+<div style="display:none;">
+<img id="scream" width="50" height="50" src="https://linksapprentice2.github.io/chef_2177927.png">
 </div>
 
-<p id="text-before-diploma">This is a photo of my college diploma (RPI class of 2014):</p>
-<p> <img id="diploma" src="https://scontent-bos5-1.xx.fbcdn.net/v/t1.6435-9/69334867_897197177333385_6328534564335517696_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=4D3tydaf01oQ7kNvwFoIMH2&_nc_oc=Adk9xs6W8KW9LIOz-QkT24FUxwp6URu_Ex3cGvklkpfkrWPrfPbgdeIKEg2SD6UN9Z5Z_xVutGKn2EvsGpRlO5AH&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&_nc_gid=ANzqi0p7nSwxFdkyeTDJVg&oh=00_AfZ-NLMhfGk5HunkkVbukY7DTU825PZK2Bthd7R60YLP5Q&oe=68F55CAC"></img></p>
-</div>  
+<canvas id="myCanvas" width="800" height="600" style="border:1px solid #000; display:block; margin:0 auto;"></canvas>
+
+
+<div style="display:none" class="button-container">
+  <button class="top-button btn btn-primary"> <i class="bi bi-arrow-up"></i></button>
+  <div class="middle-row">
+    <button class="left-button btn btn-primary"><i class="bi bi-arrow-left"></i></button>
+    <!--<button>Center</button>-->
+    <button class="right-button btn btn-primary"><i class="bi bi-arrow-right"></i></button>
+  </div>
+  <button class="bottom-button btn btn-primary"><i class="bi bi-arrow-down"></i></button>
+</div>
+
+<div style="margin-top: 50px; display:none;width:100%;text-align:center" class="play-again-div">
+    <button style="font-size:48px;" class="play-again btn btn-primary"> Play Again</button>
+</div>
+
+<style>
+@media screen and (min-width: 992px) {
+#myCanvas{
+  height:300px;
+}
+}
+
+button i{
+   font-size: 75px;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stacks the rows of buttons */
+  justify-content: center;
+  align-items: center; /* Centers the columns within the container */
+  height: 300px; /* Example height for centering */
+  border: 1px solid #ccc; /* For visualization */
+}
+
+.top-button,
+.bottom-button {
+  width: 150px; /* Example width */
+  height: 90px; /* Example height */
+  margin: 5px;
+}
+
+.middle-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.middle-row button {
+  width: 150px; /* Example width */
+  height: 90px; /* Example height */
+  margin: 5px;
+}
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<script>
+
+const topButton = document.getElementsByClassName('top-button')[0];
+const bottomButton = document.getElementsByClassName("bottom-button")[0];
+const leftButton = document.getElementsByClassName("left-button")[0];
+const rightButton = document.getElementsByClassName("right-button")[0];
+
+let holdTimer;
+
+function mouseDownNavigator(event){
+  // Start a timer for 1 second (1000 milliseconds)
+    let classNames = event.currentTarget.className.split(" ");
+    let className = "";
+    if (classNames.includes("top-button"))
+          className = "top-button";
+    else if (classNames.includes("bottom-button"))
+          className = "bottom-button";
+    else if (classNames.includes("left-button"))
+         className = "left-button";
+    else if (classNames.includes("right-button"))
+          className = "right-button";
+
+  holdTimer = setInterval(() => {
+    if (className == "top-button" && chef.y >=0)
+        chef.y -= 5;
+    else if (className == "bottom-button" && chef.y <=canvas.height - chef.height)
+        chef.y += 5;
+    else if (className == "left-button" && chef.x >= 0)
+        chef.x -= 5;
+    else if (className == "right-button" && chef.x <= canvas.width - chef.width)
+        chef.x += 5;
+    // Add your "hold" logic here
+  }, 50);
+ }
+
+function  mouseUpNavigator (event) {
+  // Clear the timer if the button is released early
+  clearInterval(holdTimer);
+}
+
+function mouseOutNavigator(event){
+  clearInterval(holdTimer);
+}
+
+function addNavigatorListeners(button){
+   button.addEventListener('mousedown', mouseDownNavigator);
+   button.addEventListener('mouseup', mouseUpNavigator);
+   button.addEventListener('mouseout', mouseOutNavigator);
+   button.addEventListener('touchstart', mouseDownNavigator);
+   button.addEventListener('touchend', mouseUpNavigator);
+   button.addEventListener('touchcancel', mouseOutNavigator);
+}
+
+
+addNavigatorListeners(topButton);
+addNavigatorListeners(bottomButton);
+addNavigatorListeners(leftButton);
+addNavigatorListeners(rightButton);
+
+$(".top-button").on("click", function(){
+  if (chef.y >=0)
+	chef.y -= 5;
+});
+$(".bottom-button").on("click", function(){
+  if (chef.y <= canvas.height - chef.height)
+      chef.y += 5;
+});
+
+$(".left-button").on("click", function(){
+  if (chef.x >= 0)
+      chef.x -= 5;
+});
+
+$(".right-button").on("click", function(){
+  if (chef.x <= canvas.width - chef.height)
+      chef.x += 5;
+});
+
+$(".play-again").on("click", function(){
+   time = 60;
+   points = 0; 
+   letters = [];
+
+   chef = {
+
+   x : canvas.width / 2,
+   y :  canvas.height / 2,
+   dx: 0,
+   dy: 0,
+   width: 80,
+   height: 80
+   };
+
+       $(".button-container").show();
+       $("button").show();
+       $(".play-again-div").hide();
+       $(".play-again").hide();
+
+   clearInterval (timerInterval);
+   timerInterval = setTimer();
+   requestAnimationFrame(gameLoop);
+
+});
+
+const canvas = document.getElementById('myCanvas');
+
+canvas.addEventListener('touchstart', moveSpriteToTouch);
+canvas.addEventListener('click', moveSpriteToClick);
+
+function moveSpriteToTouch(e) {
+    e.preventDefault(); // Prevent default browser behavior (e.g., scrolling)
+    isTouching = true;
+    const touch = e.touches[0]; // Get the first touch point
+    // touch.clientX, touch.clientY);
+    // Start drawing or other press-related action
+
+        const mouseX = touch.clientX - canvas.getBoundingClientRect().left;
+        const mouseY = touch.clientY - canvas.getBoundingClientRect().top;
+
+        // Store these coordinates as the target for the sprite
+        targetX = mouseX;
+        targetY = mouseY;
+       // let dx = targetX - chef.x;
+       // let dy = targetY - chef.y;
+
+        let dx = Math.abs(targetX - chef.x);
+        let dy = Math.abs(targetY- chef.y);
+
+console.log(targetX);
+console.log(targetY);
+console.log(mouseX);
+console.log(mouseY);
+        let distance = Math.sqrt(dx * dx + dy * dy);
+           let unitX = 0;
+           let unitY = 0;
+
+
+      if (distance > 0) { // Avoid division by zero if sprite is already at target
+        let unitX = dx / distance;
+        let unitY = dy / distance;
+      }
+console.log(unitY);
+console.log(unitX);
+
+       chef.x += unitX;
+       chef.y += unitY;
+}
+
+function moveSpriteToClick(event) {
+console.log("CLICK");
+
+console.log("CLIENT X AND Y");
+
+console.log(event.clientX);
+console.log(event.clientY);
+    //let rect = canvas.getBoundingClientRect();
+          let  targetX = event.clientX //- rect.left;
+          let  targetY = event.clientY //- rect.top;
+console.log("TARGET X AND Y");
+
+console.log(targetX);
+console.log(targetY);
+    let dx = targetX - chef.x;
+    let dy = targetY - chef.y;
+
+     //let dx = chef.x - targetX;
+     //let dy = chef.y - targetY;
+console.log("CHEF X AND Y");
+console.log(chef.x);
+console.log(chef.y);
+console.log("DX AND DY");
+
+console.log(dx);
+console.log(dy);
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+console.log(distance);
+    if (distance>5) { // Move if not yet at the target
+        let incrementX = (dx / distance) * 5;
+        let incrementY = (dy / distance) * 5;
+
+console.log(incrementX);
+console.log(incrementY);
+        chef.x += incrementX;
+        chef.y += incrementY;
+    } else { // Snap to target if very close
+        chef.x = targetX;
+        chef.y = targetY;
+    }
+}
+
+
+const ctx = canvas.getContext('2d');
+
+const image = document.getElementById("scream");
+
+image.addEventListener("load", (e) => {
+  ctx.drawImage(image, 10, 10, chef.width, chef.height);
+});
+
+let time = 60;
+
+let points = 0;
+
+let letters = [];
+
+let chef = {
+
+   x : canvas.width / 2,
+   y :  canvas.height / 2,
+   dx: 0,
+   dy: 0,
+   width: 80,
+   height: 80
+};
+
+
+function generateLetters(){
+     for (var i = 0; i<3; i++){
+     let letter={
+     rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
+     randomColor : generateRandomHexColor(),
+     randomLetter : getRandomLetter(),
+     x : getRandomIntInclusive(0, canvas.width+canvas.width*2),
+     y : 0
+    };
+        letters.push(letter);
+    }
+}
+  let interval = setInterval(() => {
+      generateLetters();
+    }, 1000);
+/*
+const letterOne={
+     rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
+     randomColor : generateRandomHexColor(),
+     randomLetter : getRandomLetter(),
+     x : getRandomIntInclusive(0, canvas.width),
+     y : 0
+};
+
+const letterTwo = {
+     rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
+     randomColor : generateRandomHexColor(),
+     randomLetter : getRandomLetter(),
+     x : getRandomIntInclusive(0, canvas.width),
+     y : 0
+};
+
+const letterThree = {
+     rotationAngleRadians : Math.random() * 360 * Math.PI / 180,
+     randomColor : generateRandomHexColor(),
+     randomLetter : getRandomLetter(),
+     x : getRandomIntInclusive(0, canvas.width),
+     y : 0
+};
+*/
+
+//const rotationAngleDegrees = Math.random() * 360; // Desired rotation in degrees
+//const rotationAngleRadians = rotationAngleDegrees * Math.PI / 180;
+
+//const randomColor = generateRandomHexColor();
+//const randomLetter = getRandomLetter()
+
+ctx.font = '96px serif'; // Sets font size and family
+//ctx.fillStyle = randomColor; // Sets text color
+ctx.textAlign = 'center'; // Aligns text horizontally
+ctx.textBaseline = 'middle'; // Aligns text vertically
+
+// let letterX = canvas.width;
+// let letterY = 0;
+
+// let letterTwoX = canvas.width - 100;
+// let letterTwoY = 0;
+
+// let letterThreeX = canvas.width
+// let letterThreeY =100;
+
+//let letters = [letterOne, letterTwo, letterThree];
+
+let letterSpeedX= -1;
+let letterSpeedY= 1;
+
+function draw() {
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+     if(time <=0)
+     {
+       ctx.fillStyle = 'black'; // Set the font style and size
+       ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
+ctx.font = '48px serif'; // Sets font size and family
+       ctx.fillStyle = 'blue'; // Set the font style and size
+       ctx.fillText("Score: " + points.toString(), canvas.width/2, canvas.height/2+100);
+// draw button
+/*
+ctx.fillStyle = '#eeaa00';
+ctx.fillRect(0, canvas.height-100, canvas.width, 100);
+ctx.fillStyle = '#001122';
+ctx.textAlign = 'center';
+ctx.font = '48px arial';
+ctx.fillText('Play Again', canvas.width/2, canvas.height-100/2);*/
+       $(".button-container").hide();
+       $("button").hide();
+       $(".play-again-div").show();
+       $(".play-again").show();
+       return -1;
+    }
+ 
+  ctx.drawImage(image, chef.x, chef.y, 80, 80);
+
+
+    // Draw ball
+    //ctx.fillRect(ballX - ballSize / 2, ballY - ballSize / 2, ballSize, ballSize);
+    drawLetter();
+    
+   ctx.fillStyle = "black";
+   ctx.fillRect(canvas.width-300, canvas.height-100, 300, 100);
+    ctx.font = '50px Arial'; // Set the font style and size
+    ctx.textAlign = 'center'; // Center the text horizontally
+    ctx.textBaseline = 'middle'; // Center the text vertically
+    ctx.fillStyle= "white";
+
+    let textX = (canvas.width-300) + 300 / 2;
+    let textY = (canvas.height-100) + 100 / 2;
+  
+    ctx.fillText(points.toString(), textX, textY);
+
+    textX = 300/2;
+    textY = canvas.height- 100/2;
+    ctx.fillStyle = 'black'; // Set the font style and size
+
+   ctx.fillRect(0, canvas.height-100, 300, 100);
+    ctx.fillStyle = 'white'; // Set the font style and size
+
+    ctx.fillText(time.toString(), textX, textY);
+
+    
+
+ctx.font = '96px serif'; // Sets font size and family
+
+    // Draw scores
+    //ctx.font = '30px Arial';
+    //ctx.fillText(player1Score, canvas.width / 4, 50);
+    //ctx.fillText(player2Score, canvas.width * 3 / 4, 50);
+}
+
+
+function drawLetter(){
+
+
+//const x = canvas.width/2;
+//const y = canvas.height/2;
+
+for (let i = letters.length - 1; i >= 0; i--) {
+let x = letters[i].x;
+let y = letters[i].y;
+
+ctx.save();
+
+ctx.fillStyle = letters[i].randomColor; // Sets text color
+
+ctx.translate(x,y)
+ctx.rotate(letters[i].rotationAngleRadians)
+
+        let textMetrics = ctx.measureText(letters[i].randomLetter);
+        let textWidth = textMetrics.width;
+        let textHeight = parseInt(ctx.font); // A rough estimate for height
+
+
+        // if (chef.x >= letters[i].x - textWidth/2 && chef.x <= letters[i].x + textWidth/2 && chef.y >= letters[i].y - textHeight/2 && chef.y <= letters[i].y + textHeight/2){
+	 //  if (chef.x >= letters[i].x - textWidth && chef.x <= letters[i].x + textWidth && chef.y >= letters[i].y - textHeight && chef.y <= letters[i].y + textHeight){
+//    const overlapX = rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x;
+
+      let overlapX = chef.x < letters[i].x + textWidth && chef.x + chef.width > letters[i].x;
+    //const overlapY = rect1.y < rect2.y + rect2.height && rect1.y + rect1.height > rect2.y;
+
+      let overlapY = chef.y < letters[i].y + textHeight && chef.y + chef.height > letters[i].y;
+
+      let collision = overlapX && overlapY;
+       if (collision){
+
+             // alert("test");
+            console.log(letters);
+
+            let lowerCaseLetter = letters[i].randomLetter.toLowerCase();
+            pointage =  (lowerCaseLetter.charCodeAt(0) - 'a'.charCodeAt(0) + 1);
+            points += pointage;
+            console.log(letters[i].randomLetter);
+            console.log (pointage);
+            console.log (points);
+                           letters.splice(i, 1);
+
+         }	
+else{
+
+	ctx.fillText(letters[i].randomLetter, -textWidth / 2, textHeight / 2); // Draws filled text in the center
+}
+
+ctx.restore();
+}
+
+}
+
+function generateRandomHexColor() {
+  const maxVal = 0xFFFFFF; // Represents the maximum possible hex value (16777215)
+  let randomNumber = Math.floor(Math.random() * (maxVal + 1)); // Generate a random number between 0 and 16777215
+  let hexColor = randomNumber.toString(16); // Convert to hexadecimal string
+  hexColor = hexColor.padStart(6, '0'); // Pad with leading zeros if necessary to ensure 6 characters
+  return `#${hexColor.toUpperCase()}`; // Prepend '#' and convert to uppercase
+}
+
+function getRandomLetter() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const randomIndex = Math.floor(Math.random() * characters.length);
+  return characters.charAt(randomIndex);
+}
+
+function update(){
+  for (var i = 0; i< letters.length; i++){
+    letters[i].x += letterSpeedX;
+    letters[i].y += letterSpeedY;
+  }
+
+        //if (letterX < 0) {
+        //    letterX = canvas.width;
+        //}
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min); // Ensure minimum is an integer and rounds up
+  max = Math.floor(max); // Ensure maximum is an integer and rounds down
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/*
+function resetLetter() {
+    letterX = canvas.width;
+    letterY = 0;
+    letterSpeedX = -1; // Random initial direction
+    letterSpeedY = 1;
+}
+*/
+
+function gameLoop(){
+  update();
+  continuation = draw(); 
+  if (continuation == -1)
+      //ctx.fillRect(canvas.width-300, canvas.height-100, 300, 100);
+      return -1;
+  requestAnimationFrame(gameLoop);
+}
+
+function decrementTimer(){
+  time -= 1;
+}
+function setTimer(){
+  let interval = setInterval(decrementTimer, 1000);
+  setTimeout(() => {
+  clearInterval(interval);
+  }, 61000);
+  return interval;
+}
+
+function instructionsPage(){
+ctx.font = '60px serif'; // Sets font size and family
+       ctx.fillStyle = 'black'; // Set the font style and size
+       ctx.fillText("Instructions:", canvas.width/2, 100);
+ctx.font = '48px serif'; // Sets font size and family
+       ctx.fillText("Press the buttons below the ", canvas.width/2, 200);
+       ctx.fillText("canvas to move the chef character.", canvas.width/2, 300);
+       ctx.fillText("Point values: A = 1, B = 2" , canvas.width/2, 400);  
+       ctx.fillText("C = 3, and so on.", canvas.width/2,500);
+       setTimeout(initiateGame, 5000);
+
+}
+
+//resetLetter();
+instructionsPage();
+
+let timerInterval = null;
+
+function initiateGame(){
+   timerInterval = setTimer();
+  requestAnimationFrame(gameLoop);
+   $(".button-container").show();
+    $("button").show();
+       $(".play-again-div").hide();
+       $(".play-again").hide();
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
 </body>
+
 </html>
