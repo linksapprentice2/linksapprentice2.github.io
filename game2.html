@@ -96,13 +96,13 @@ function mouseDownNavigator(event){
           className = "right-button";
 
   holdTimer = setInterval(() => {
-    if (className == "top-button")
+    if (className == "top-button" && chef.y >=0)
         chef.y -= 5;
-    else if (className == "bottom-button")
+    else if (className == "bottom-button" && chef.y <=canvas.height - chef.height)
         chef.y += 5;
-    else if (className == "left-button")
+    else if (className == "left-button" && chef.x >= 0)
         chef.x -= 5;
-    else if (className == "right-button")
+    else if (className == "right-button" && chef.x <= canvas.width - chef.width)
         chef.x += 5;
     // Add your "hold" logic here
   }, 50);
@@ -133,18 +133,22 @@ addNavigatorListeners(leftButton);
 addNavigatorListeners(rightButton);
 
 $(".top-button").on("click", function(){
-  chef.y -= 5;
+  if (chef.y >=0)
+	chef.y -= 5;
 });
 $(".bottom-button").on("click", function(){
-  chef.y += 5;
+  if (chef.y <= canvas.height - chef.height)
+      chef.y += 5;
 });
 
 $(".left-button").on("click", function(){
-  chef.x -= 5;
+  if (chef.x >= 0)
+      chef.x -= 5;
 });
 
 $(".right-button").on("click", function(){
-  chef.x += 5;
+  if (chef.x <= canvas.width - chef.height)
+      chef.x += 5;
 });
 
 $(".play-again").on("click", function(){
@@ -540,9 +544,9 @@ ctx.font = '60px serif'; // Sets font size and family
        ctx.fillText("Instructions:", canvas.width/2, 100);
 ctx.font = '48px serif'; // Sets font size and family
        ctx.fillText("Press the buttons below the ", canvas.width/2, 200);
-       ctx.fillText("canvas to move the chef.", canvas.width/2, 300);
-       ctx.fillText("Point values: A = 1, B = 2," , canvas.width/2, 400);  
-       ctx.fillText("C = 3, etc.", canvas.width/2,500);
+       ctx.fillText("canvas to move the chef character.", canvas.width/2, 300);
+       ctx.fillText("Point values: A = 1, B = 2" , canvas.width/2, 400);  
+       ctx.fillText("C = 3, and so on.", canvas.width/2,500);
        setTimeout(initiateGame, 5000);
 
 }
