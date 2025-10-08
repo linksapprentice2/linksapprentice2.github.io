@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>Rotating Doughnut</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<script type="module">
+
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// Scene setup
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// OrbitControls for camera interaction
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // Optional: for smoother camera movement
+
+// Create the TorusGeometry (donut shape)
+// Parameters: radius, tube, radialSegments, tubularSegments, arc
+// - radius: Radius of the torus (from the center of the torus to the center of the tube).
+// - tube: Radius of the tube. Must be smaller than radius.
+// - radialSegments: Number of segments around the radius of the torus.
+// - tubularSegments: Number of segments around the tube of the torus.
+// - arc: Central angle (default is Math.PI * 2 for a full donut).
+const geometry = new THREE.TorusGeometry(5, 2, 16, 100);
+
+// Create a material
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: false }); // Green color, not wireframe
+
+// Create the mesh (combining geometry and material)
+const donut = new THREE.Mesh(geometry, material);
+scene.add(donut);
+
+// Set camera position
+camera.position.z = 15;
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Optional: Rotate the donut
+    donut.rotation.x += 0.005;
+    donut.rotation.y += 0.005;
+
+    controls.update(); // Update OrbitControls
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// Handle window resizing
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+</script>
+</body>
+</html>
