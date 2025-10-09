@@ -56,9 +56,8 @@ camera.position.z = 15;
     const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
     const ball = new THREE.Mesh(ballGeometry, ballMaterial);
     scene.add(ball);    
-
-
-   const direction = new THREE.Vector3(0, 0, 1); // Move along the positive X-axis
+    ball.position.set(camera.position.x, camera.position.y, camera.position.z);
+   const direction = new THREE.Vector3(0, 0, -1); // Move along the positive X-axis
     direction.normalize(); // Ensure the direction vector has a length of 1
     const speed = 0.05; // Adjust this value to control speed
 
