@@ -13,14 +13,22 @@
   }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/ammojs@0.0.1/ammo.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+
 </head>
 <body>
 <script type="module">
 
 
 import * as THREE from 'three';
+
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+
+const world = new CANNON.World();
+world.gravity.set(0, -9.82, 0); // Set gravity
+
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -36,7 +44,7 @@ document.body.appendChild(renderer.domElement);
     const ambientLight = new THREE.AmbientLight(0x404040); // Soft ambient light
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 2); // White directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 3); // White directional light
     directionalLight.position.set(1, 1, 1).normalize();
     scene.add(directionalLight);
 
@@ -61,10 +69,31 @@ const geometry = new THREE.TorusGeometry(5, 2, 16, 100);
 //const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: false }); // Green color, not wireframe
 
 
-const material = new THREE.MeshPhongMaterial({ color: 0x00ff00, shininess: 100 });
+const material = new THREE.MeshPhongMaterial({ color: 0x00ff00, shininess: 200 });
 // Create the mesh (combining geometry and material)
 const donut = new THREE.Mesh(geometry, material);
+donut.castShadow = false;
+donut.receiveShadow = false;
 scene.add(donut);
+
+const torusShape = CANNON.Trimesh.createTorus(geometry);
+const torusBody = new CANNON.Body({
+  mass: 1 // A mass of 0 makes the object static
+});
+torusBody.addShape(torusShape);
+world.addBody(torusBody);
+
+const anchorBody = new CANNON.Body({
+  mass: 0, // Static anchor
+  position: torusBody.position.clone(),
+});
+world.addBody(anchorBody);
+
+const constraint = new CANNON.LockConstraint(anchorBody, torusBody);
+world.addConstraint(constraint);
+
+
+
 
 // Set camera position
 camera.position.z = 15;
@@ -74,6 +103,7 @@ let speed = 0.05; // Adjust this value to control speed
 let direction = new THREE.Vector3(0, 0, -1); // Move along the positive X-axis
 direction.normalize(); // Ensure the direction vector has a length of 1
 let balls = [];
+
 
 
 window.addEventListener('mousedown', (event) => {
@@ -86,7 +116,8 @@ window.addEventListener('mousedown', (event) => {
 
 let ballObject = {
     ball: ball,
-    direction: direction
+    direction: direction,
+    body: null
 };
   
   //ballObject.ball = ball;
@@ -98,9 +129,50 @@ let ballObject = {
   //ballObject.direction = direction; 
   // Set the ball's initial position slightly in front of the camera
   
-  balls.push(ballObject);
-    
+ let sphereShape = new CANNON.Sphere(0.5);
+ let sphereBody = new CANNON.Body({
+  mass: 1,
+  position: new CANNON.Vec3(camera.position.x, camera.position.y, camera.position.z)
+  //velocity: new CANNON.Vec3(5, 5, 5)
 });
+sphereBody.addShape(sphereShape);
+sphereBody.velocity.set(ballObject.direction.x * 50,
+                        ballObject.direction.y * 50,
+                        ballObject.direction.z * 50);
+//sphereBody.applyForce(new CANNON.Vec3(0, 9.82, 0), sphereBody.position.clone());
+
+//sphereBody.force.y += sphereBody.mass;
+
+
+
+sphereBody.addEventListener("collide", function(event){
+     if (event.body === torusBody){
+           alert("HIT");
+     }
+});
+
+
+
+   ballObject.body = sphereBody;
+
+  balls.push(ballObject);
+
+world.addBody(sphereBody);
+
+});
+
+
+const defaultMaterial = new CANNON.Material('default');
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  defaultMaterial,
+  defaultMaterial,
+  {
+    restitution: 0.9, // Bounciness
+    friction: 0.2
+  }
+);
+world.addContactMaterial(defaultContactMaterial);
+
 
 
 // Animation loop
@@ -108,10 +180,31 @@ function animate() {
     requestAnimationFrame(animate);
 
     // Optional: Rotate the donut
-    donut.rotation.x += 0.005;
-    donut.rotation.y += 0.005;
+
+   //torusBody.angularVelocity.set(0, 5, 0);
+   // donut.rotation.x += 0.005;
+   // donut.rotation.y += 0.005;
+   //donut.position.copy(torusBody.position);
+   //donut.quaternion.copy(torusBody.quaternion);
+
+  const rotationAxis = new CANNON.Vec3(0, 1, 0);
+  const rotationSpeed = 0.01;
+
+  const rotationQuaternion = new CANNON.Quaternion();
+  rotationQuaternion.setFromAxisAngle(rotationAxis, rotationSpeed);
+
+  torusBody.quaternion = rotationQuaternion.mult(torusBody.quaternion);
+
+   
+world.step(1/60);
+
+donut.position.copy(torusBody.position);
+   donut.quaternion.copy(torusBody.quaternion);
+
     for (let i = 0; i< balls.length; i++){
-        balls[i].ball.position.addScaledVector(balls[i].direction, speed);
+
+  balls[i].ball.position.copy(balls[i].body.position);
+  balls[i].ball.quaternion.copy(balls[i].body.quaternion);
    }
     controls.update(); // Update OrbitControls
     renderer.render(scene, camera);
