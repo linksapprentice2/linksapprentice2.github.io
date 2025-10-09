@@ -52,32 +52,39 @@ scene.add(donut);
 // Set camera position
 camera.position.z = 15;
 
-    const ballGeometry = new THREE.SphereGeometry(1, 32, 32); // Radius, width segments, height segments
-    const ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
-    const ball = new THREE.Mesh(ballGeometry, ballMaterial);
+let speed = 0.05; // Adjust this value to control speed
+
+let direction = new THREE.Vector3(0, 0, -1); // Move along the positive X-axis
+direction.normalize(); // Ensure the direction vector has a length of 1
+let balls = [];
+
+
+window.addEventListener('mousedown', (event) => {
+
+    let ballGeometry = new THREE.SphereGeometry(1, 32, 32); // Radius, width segments, height segments
+    let ballMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
+    let ball = new THREE.Mesh(ballGeometry, ballMaterial);
     scene.add(ball);    
     ball.position.set(camera.position.x, camera.position.y, camera.position.z);
-   const direction = new THREE.Vector3(0, 0, -1); // Move along the positive X-axis
-    direction.normalize(); // Ensure the direction vector has a length of 1
-    const speed = 0.05; // Adjust this value to control speed
 
-/*
-window.addEventListener('mousedown', (event) => {
-    // Calculate launch direction (e.g., using Raycaster from camera)
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const direction = raycaster.ray.direction.clone().normalize();
+let ballObject = {
+    ball: ball,
+    direction: direction
+};
+  
+  //ballObject.ball = ball;
 
-    // Apply force to the ball's rigid body
-    const force = new Ammo.btVector3(direction.x * 50, direction.y * 50, direction.z * 50); // Adjust force magnitude
-    ballRigidBody.applyCentralImpulse(force);
-    Ammo.destroy(force);
+  let cameraDirection = new THREE.Vector3();
+  camera.getWorldDirection(cameraDirection);
+  ballObject.direction = cameraDirection; 
+
+  //ballObject.direction = direction; 
+  // Set the ball's initial position slightly in front of the camera
+  
+  balls.push(ballObject);
+    
 });
 
-*/
 
 // Animation loop
 function animate() {
@@ -86,9 +93,9 @@ function animate() {
     // Optional: Rotate the donut
     donut.rotation.x += 0.005;
     donut.rotation.y += 0.005;
-
-        ball.position.addScaledVector(direction, speed);
-
+    for (let i = 0; i< balls.length; i++){
+        balls[i].ball.position.addScaledVector(balls[i].direction, speed);
+   }
     controls.update(); // Update OrbitControls
     renderer.render(scene, camera);
 }
