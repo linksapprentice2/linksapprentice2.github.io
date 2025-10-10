@@ -30,6 +30,19 @@ const world = new CANNON.World();
 world.gravity.set(0, -9.82, 0); // Set gravity
 
 
+const wallMaterial = new CANNON.Material('wallMaterial');
+const defaultMaterial = new CANNON.Material('default');
+const defaultContactMaterial = new CANNON.ContactMaterial(
+  wallMaterial,
+  defaultMaterial,
+  {
+    restitution: 0.9, // Bounciness
+    friction: 0.2
+  }
+);
+world.addContactMaterial(defaultContactMaterial);
+
+
 // Scene setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -78,7 +91,8 @@ scene.add(donut);
 
 const torusShape = CANNON.Trimesh.createTorus(geometry);
 const torusBody = new CANNON.Body({
-  mass: 1 // A mass of 0 makes the object static
+  mass: 1, // A mass of 0 makes the object static
+material: wallMaterial
 });
 torusBody.addShape(torusShape);
 world.addBody(torusBody);
@@ -129,10 +143,11 @@ let ballObject = {
   //ballObject.direction = direction; 
   // Set the ball's initial position slightly in front of the camera
   
- let sphereShape = new CANNON.Sphere(0.5);
+ let sphereShape = new CANNON.Sphere(3);
  let sphereBody = new CANNON.Body({
   mass: 1,
-  position: new CANNON.Vec3(camera.position.x, camera.position.y, camera.position.z)
+  position: new CANNON.Vec3(camera.position.x, camera.position.y, camera.position.z),
+  defaultMaterial
   //velocity: new CANNON.Vec3(5, 5, 5)
 });
 sphereBody.addShape(sphereShape);
@@ -146,6 +161,7 @@ sphereBody.velocity.set(ballObject.direction.x * 50,
 
 
 sphereBody.addEventListener("collide", function(event){
+   // alert("COLLISION");
      if (event.body === torusBody){
            alert("HIT");
      }
@@ -162,17 +178,8 @@ world.addBody(sphereBody);
 });
 
 
-const defaultMaterial = new CANNON.Material('default');
-const defaultContactMaterial = new CANNON.ContactMaterial(
-  defaultMaterial,
-  defaultMaterial,
-  {
-    restitution: 0.9, // Bounciness
-    friction: 0.2
-  }
-);
-world.addContactMaterial(defaultContactMaterial);
-
+let points = 0;
+let alreadyScored = [];
 
 
 // Animation loop
@@ -201,13 +208,46 @@ world.step(1/60);
 donut.position.copy(torusBody.position);
    donut.quaternion.copy(torusBody.quaternion);
 
-    for (let i = 0; i< balls.length; i++){
+  
 
+    for (let i = 0; i< balls.length; i++){
+       if (!alreadyScored.includes(balls[i]) &&  isBallInTorus(balls[i].ball, balls[i].body, torusBody, 5, 2))
+       {
+           points += 1;
+           alreadyScored.push(balls[i]);
+       }
   balls[i].ball.position.copy(balls[i].body.position);
   balls[i].ball.quaternion.copy(balls[i].body.quaternion);
    }
     controls.update(); // Update OrbitControls
     renderer.render(scene, camera);
+}
+
+  function isBallInTorus(ball, ballBody, torusBody, torusMajorRadius, torusMinorRadius) {
+// alert(torusMajorRadius);
+// alert(torusMinorRadius);
+  // ( ... Step 1 code from above ... )
+  const x = ball.position.x;
+  const y = ball.position.y;
+  const z = ball.position.z;
+
+  // The formula for a torus is: ((sqrt(x^2+y^2) - R)^2) + z^2 < r^2
+  // where R is the major radius and r is the minor radius.
+  // We'll also need to account for the ball's radius.
+  const ballRadius = ballBody.shapes[0].radius;
+
+  // Calculate the distance of the ball's center from the torus's central ring
+  const distFromCenterRing = Math.sqrt(x * x + z * z) - torusMajorRadius;
+
+  // Calculate the final distance squared
+  const distSquared = (distFromCenterRing * distFromCenterRing) + (y * y);
+
+  // Check if the squared distance is less than the minor radius squared,
+  // including the ball's radius
+  const minorRadiusWithBall = torusMinorRadius - ballRadius;
+  const isInside = distSquared < (minorRadiusWithBall * minorRadiusWithBall);
+
+  return isInside;
 }
 
 animate();
