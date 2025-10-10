@@ -214,6 +214,7 @@ donut.position.copy(torusBody.position);
        if (!alreadyScored.includes(balls[i]) &&  isBallInTorus(balls[i].ball, balls[i].body, torusBody, 5, 2))
        {
            points += 1;
+            alert(points);
            alreadyScored.push(balls[i]);
        }
   balls[i].ball.position.copy(balls[i].body.position);
