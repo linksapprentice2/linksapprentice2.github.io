@@ -5,6 +5,11 @@
         body { margin: 0; }
         canvas { display: block; width:800px;}
     </style>
+<script
+  src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+  crossorigin="anonymous"></script>
+
 <script type="importmap">
 {
   "imports": {
@@ -18,6 +23,9 @@
 
 </head>
 <body>
+
+        <div style="position:absolute;top:0; left:0; width:100%; height: 100%; color:white; font-size:48px;" id="points">Points: 0</div>
+
 <script type="module">
 
 
@@ -162,6 +170,7 @@ sphereBody.velocity.set(ballObject.direction.x * 50,
 
 sphereBody.addEventListener("collide", function(event){
    // alert("COLLISION");
+alert(JSON.stringify(torusBody));
      if (event.body === torusBody){
            alert("HIT");
      }
@@ -214,7 +223,7 @@ donut.position.copy(torusBody.position);
        if (!alreadyScored.includes(balls[i]) &&  isBallInTorus(balls[i].ball, balls[i].body, torusBody, 5, 2))
        {
            points += 1;
-            alert(points);
+            $("#points").text("Points: " + points);
            alreadyScored.push(balls[i]);
        }
   balls[i].ball.position.copy(balls[i].body.position);
