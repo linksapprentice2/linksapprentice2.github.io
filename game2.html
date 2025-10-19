@@ -441,7 +441,7 @@ ctx.rotate(letters[i].rotationAngleRadians)
 
         let textMetrics = ctx.measureText(letters[i].randomLetter);
         let textWidth = textMetrics.width;
-        let textHeight = parseInt(ctx.font); // A rough estimate for height
+        let textHeight = Math.abs(textMetrics.actualBoundingBoxAscent) + Math.abs(textMetrics.actualBoundingBoxDescent); // A rough estimate for height
 
 
         // if (chef.x >= letters[i].x - textWidth/2 && chef.x <= letters[i].x + textWidth/2 && chef.y >= letters[i].y - textHeight/2 && chef.y <= letters[i].y + textHeight/2){
